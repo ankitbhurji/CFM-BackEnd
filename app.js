@@ -1,9 +1,37 @@
 require('dotenv').config();
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json())
+var cors = require('cors');
+app.use(cors());
 const CONNECTION = require("./Database/Db");
 CONNECTION();
+
+const Password = require('./model/Password');
+
+app.post('/password', async (req, res)=>{
+    const getPassword = await Password.find()
+    var setPassword;
+    if(getPassword.length==1){
+        setPassword = await Password.updateOne({},{password:req.body.pin})
+    }else{
+        const password = new Password({
+            password: req.body.pin
+        })
+        password.save()
+    }
+    res.send(setPassword);
+    // console.log(req.body.confirmPin, req.body.pin)
+});
+
+app.get('/getpassword', async (req, res)=>{
+    const getPassword = await Password.find()
+    res.send(getPassword)
+})
+
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!'); 

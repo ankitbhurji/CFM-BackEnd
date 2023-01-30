@@ -10,6 +10,29 @@ const CONNECTION = require("./Database/Db");
 CONNECTION();
 
 const Password = require('./model/Password');
+const Folder = require('./model/FolderSchema');
+const File = require('./model/FolderSchema')
+const Data = require('./model/FolderSchema')
+
+app.get('/api/folder', async (req, res)=>{
+    const folders = await Folder.find({}, {folderName:1})
+    res.send(folders)
+})
+
+app.post('/api/folder', (req, res)=>{
+    const folder = new Folder({
+        folderName:req.body.folderName,
+        fileName:[{
+            fileName:'myfile',
+            data:[{
+                data:'mydata'
+            }]
+        }]
+    })
+    folder.save(); 
+    res.send('data saved')
+    // console.log(req.body.folderName)
+})
 
 app.post('/password', async (req, res)=>{
     const getPassword = await Password.find()

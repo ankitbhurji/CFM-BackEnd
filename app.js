@@ -11,28 +11,50 @@ CONNECTION();
 
 const Password = require('./model/Password');
 const Folder = require('./model/FolderSchema');
-const File = require('./model/FolderSchema')
-const Data = require('./model/FolderSchema')
+const File = require('./model/FileSchema');
+
 
 app.get('/api/folder', async (req, res)=>{
     const folders = await Folder.find({}, {folderName:1})
     res.send(folders)
 })
 
-app.post('/api/folder', (req, res)=>{
-    const folder = new Folder({
-        folderName:req.body.folderName,
-        fileName:[{
-            fileName:'myfile',
-            data:[{
-                data:'mydata'
-            }]
-        }]
-    })
-    folder.save(); 
+app.post('/api/folder', async (req, res)=>{
+        
+        const folder = new Folder({
+            folderName:req.body.folderName,
+        })
+        
+        if(req.body.folderName==undefined){
+            // console.log('not saved')
+        }else{
+            folder.save()
+        }
     res.send('data saved')
-    // console.log(req.body.folderName)
 })
+
+app.post('/api/file', (req, res)=>{
+    const file = new File({
+        folderName:req.body.folderName,
+        fileName:req.body.fileName,
+        fileData:req.body.fileData
+    })
+    file.save()
+    res.send('data has been updated.')
+    console.log(req.body.folderName,req.body.fileName,req.body.fileData)
+})
+
+app.get('/api/find/:folder', async (req, res)=>{
+    console.log(req.params.folder)
+    // console.log(req.body.selectedFolder)
+
+    const fileData = await File.find({folderName:req.params.folder});
+    res.send(fileData)
+})
+
+
+
+
 
 app.post('/password', async (req, res)=>{
     const getPassword = await Password.find()

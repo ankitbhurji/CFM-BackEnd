@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 const fileSchema = {
     folderName:String,
-    fileName: String, 
+    fileName: {
+        type: String,
+        text: true,
+        index: true,
+        unique: true
+    }, 
     fileData: String
 }
 
